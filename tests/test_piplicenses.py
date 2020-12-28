@@ -1,25 +1,28 @@
-# -*- coding: utf-8 -*-
-# vim:fenc=utf-8 ff=unix ft=python ts=4 sw=4 sts=4 si et
 import copy
 import re
 import sys
 import unittest
 from email import message_from_string
 
+import docutils.frontend
 import docutils.parsers.rst
 import docutils.utils
-import docutils.frontend
 
-import piplicenses
-from piplicenses import (__pkgname__, create_parser, output_colored,
-                         create_licenses_table, get_output_fields, get_sortby,
-                         factory_styled_table_with_args, create_warn_string,
-                         find_license_from_classifier, create_output_string,
-                         select_license_by_source, save_if_needs,
-                         RULE_ALL, RULE_FRAME, RULE_HEADER, RULE_NONE,
-                         DEFAULT_OUTPUT_FIELDS, SYSTEM_PACKAGES,
-                         LICENSE_UNKNOWN)
-
+import piplicenses.__main__
+import piplicenses.utils
+from piplicenses.__main__ import (
+    create_licenses_table, create_output_string, get_output_fields,
+    get_packages, get_sortby, select_license_by_source)
+from piplicenses.argparse import create_parser
+from piplicenses.const import (
+    DEFAULT_OUTPUT_FIELDS, LICENSE_UNKNOWN, SYSTEM_PACKAGES,
+    __pkgname__)
+from piplicenses.parse import find_license_from_classifier
+from piplicenses.table import (
+    RULE_ALL, RULE_FRAME, RULE_HEADER, RULE_NONE,
+    factory_styled_table_with_args)
+from piplicenses.utils import (
+    create_warn_string, output_colored, save_if_needs)
 
 UNICODE_APPENDIX = ""
 with open('tests/fixtures/unicode_characters.txt', encoding='utf-8') as f:
@@ -34,8 +37,8 @@ def get_installed_distributions_mocked(*args, **kwargs):
     return packages
 
 
-get_installed_distributions_orig = piplicenses.get_installed_distributions
-piplicenses.get_installed_distributions = get_installed_distributions_mocked
+get_installed_distributions_orig = piplicenses.__main__.get_installed_distributions
+piplicenses.__main__.get_installed_distributions = get_installed_distributions_mocked
 
 
 class CommandLineTestCase(unittest.TestCase):
@@ -533,18 +536,18 @@ class TestGetLicenses(CommandLineTestCase):
 
     def test_without_filter(self):
         args = self.parser.parse_args([])
-        packages = list(piplicenses.get_packages(args))
+        packages = list(get_packages(args))
         self.assertIn(UNICODE_APPENDIX, packages[-1]["name"])
 
     def test_with_default_filter(self):
         args = self.parser.parse_args(["--filter-strings"])
-        packages = list(piplicenses.get_packages(args))
+        packages = list(get_packages(args))
         self.assertNotIn(UNICODE_APPENDIX, packages[-1]["name"])
 
     def test_with_specified_filter(self):
         args = self.parser.parse_args(["--filter-strings",
                                        "--filter-code-page=ascii"])
-        packages = list(piplicenses.get_packages(args))
+        packages = list(get_packages(args))
         self.assertNotIn(UNICODE_APPENDIX, packages[-1]["summary"])
 
     def test_invalid_code_page(self):
@@ -569,7 +572,7 @@ def test_output_file_sccess(monkeypatch):
 
     mocked_stdout = MockStdStream()
     mocked_stderr = MockStdStream()
-    monkeypatch.setattr(piplicenses, 'open', mocked_open)
+    monkeypatch.setattr(piplicenses.utils, 'open', mocked_open)
     monkeypatch.setattr(sys.stdout, 'write', mocked_stdout.write)
     monkeypatch.setattr(sys.stderr, 'write', mocked_stderr.write)
     monkeypatch.setattr(sys, 'exit', lambda n: None)
@@ -585,7 +588,7 @@ def test_output_file_error(monkeypatch):
 
     mocked_stdout = MockStdStream()
     mocked_stderr = MockStdStream()
-    monkeypatch.setattr(piplicenses, 'open', mocked_open)
+    monkeypatch.setattr(piplicenses.utils, 'open', mocked_open)
     monkeypatch.setattr(sys.stdout, 'write', mocked_stdout.write)
     monkeypatch.setattr(sys.stderr, 'write', mocked_stderr.write)
     monkeypatch.setattr(sys, 'exit', lambda n: None)
