@@ -74,7 +74,7 @@ def test_with_empty_args(parser: CompatibleArgumentParser):
     for sys_pkg in SYSTEM_PACKAGES:
         assert sys_pkg not in pkg_name_columns
 
-    assert get_sortby(args) == 'Name'
+    assert get_sortby(**vars(args)) == 'Name'
 
     output_string = create_output_string(args)
     assert '<table>' not in output_string
@@ -367,7 +367,7 @@ def test_summary(parser: CompatibleArgumentParser):
     assert 'Count' in output_string
     assert 'Name' not in output_string
 
-    warn_string = create_warn_string(args)
+    warn_string = create_warn_string(**vars(args))
     assert len(warn_string) == 0
 
 

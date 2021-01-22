@@ -4,9 +4,9 @@
 import sys
 from enum import Enum
 from functools import partial
-from typing import List
+from typing import Any, List
 
-from .const import CustomNamespace, FormatArg, NoValueEnum
+from .const import FormatArg, NoValueEnum
 
 
 def value_to_enum_key(value: str) -> str:
@@ -22,16 +22,24 @@ def choices_from_enum(enum_cls: NoValueEnum) -> List[str]:
             for key in enum_cls.__members__.keys()]
 
 
-def create_warn_string(args: CustomNamespace):
+def create_warn_string(
+        *,
+        format_: FormatArg = FormatArg.PLAIN,
+        summary: bool = False,
+        with_license_file: bool = False,
+        with_authors: bool = False,
+        with_urls: bool = False,
+        **kwargs: Any,
+) -> str:
     warn_messages = []
     warn = partial(output_colored, '33')
 
-    if args.with_license_file and not args.format_ == FormatArg.JSON:
+    if with_license_file and not format_ == FormatArg.JSON:
         message = warn(('Due to the length of these fields, this option is '
                         'best paired with --format=json.'))
         warn_messages.append(message)
 
-    if args.summary and (args.with_authors or args.with_urls):
+    if summary and (with_authors or with_urls):
         message = warn(('When using this option, only --order=count or '
                         '--order=license has an effect for the --order '
                         'option. And using --with-authors and --with-urls '

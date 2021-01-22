@@ -1,12 +1,9 @@
-from piplicenses.argparse import CompatibleArgumentParser
-from piplicenses.table import factory_styled_table_with_args, RULE_FRAME
+from piplicenses.const import FormatArg
+from piplicenses.table import RULE_FRAME, factory_styled_table_with_args
 
 
-def test_format_plain(parser: CompatibleArgumentParser):
-    format_plain_args = ['--format=plain']
-    args = parser.parse_args(format_plain_args)
-    table = factory_styled_table_with_args(args)
-
+def test_format_plain():
+    table = factory_styled_table_with_args(FormatArg.PLAIN)
     assert 'l' in table.align.values()
     assert table.border is False
     assert table.header is True

@@ -32,7 +32,7 @@ def test_with_license_file_warning(parser: CompatibleArgumentParser):
     with_license_file_args = ['--with-license-file', '--format=markdown']
     args = parser.parse_args(with_license_file_args)
 
-    warn_string = create_warn_string(args)
+    warn_string = create_warn_string(**vars(args))
     assert 'best paired with --format=json' in warn_string
 
 
@@ -40,14 +40,14 @@ def test_summary_warning(parser: CompatibleArgumentParser):
     summary_args = ['--summary', '--with-authors']
     args = parser.parse_args(summary_args)
 
-    warn_string = create_warn_string(args)
+    warn_string = create_warn_string(**vars(args))
     assert 'using --with-authors and --with-urls will be ignored.' \
         in warn_string
 
     summary_args = ['--summary', '--with-urls']
     args = parser.parse_args(summary_args)
 
-    warn_string = create_warn_string(args)
+    warn_string = create_warn_string(**vars(args))
     assert 'using --with-authors and --with-urls will be ignored.' \
         in warn_string
 

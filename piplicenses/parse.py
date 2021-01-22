@@ -6,8 +6,7 @@ import os
 from email import message_from_string
 from email.parser import FeedParser
 
-from .const import (
-    LICENSE_UNKNOWN, METADATA_KEYS, CustomNamespace, FromArg)
+from .const import LICENSE_UNKNOWN, METADATA_KEYS, FromArg
 
 
 def get_pkg_included_file(pkg, file_names):
@@ -56,7 +55,7 @@ def select_license_by_source(from_source, license_classifier, license_meta):
         return license_meta
 
 
-def get_pkg_info(pkg, args: CustomNamespace):
+def get_pkg_info(pkg, filter_strings: bool, filter_code_page: str):
     (license_file, license_text) = get_pkg_included_file(
         pkg,
         ('LICENSE*', 'LICENCE*', 'COPYING*')
@@ -99,16 +98,16 @@ def get_pkg_info(pkg, args: CustomNamespace):
         pkg_info['license_classifier'] = \
             find_license_from_classifier(message)
 
-    if args.filter_strings:
+    if filter_strings:
         for k in pkg_info:
             if isinstance(pkg_info[k], list):
                 for i, item in enumerate(pkg_info[k]):
                     pkg_info[k][i] = item. \
-                        encode(args.filter_code_page, errors="ignore"). \
-                        decode(args.filter_code_page)
+                        encode(filter_code_page, errors="ignore"). \
+                        decode(filter_code_page)
             else:
                 pkg_info[k] = pkg_info[k]. \
-                    encode(args.filter_code_page, errors="ignore"). \
-                    decode(args.filter_code_page)
+                    encode(filter_code_page, errors="ignore"). \
+                    decode(filter_code_page)
 
     return pkg_info

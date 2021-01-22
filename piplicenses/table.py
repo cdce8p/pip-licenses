@@ -3,7 +3,7 @@
 # ---------------------------------------------------------------------------
 from prettytable import PrettyTable
 
-from .const import DEFAULT_OUTPUT_FIELDS, CustomNamespace, FormatArg
+from .const import DEFAULT_OUTPUT_FIELDS, FormatArg
 
 try:
     from prettytable.prettytable import ALL as RULE_ALL
@@ -135,30 +135,30 @@ class PlainVerticalTable(PrettyTable):
 
 
 def factory_styled_table_with_args(
-        args: CustomNamespace, output_fields=DEFAULT_OUTPUT_FIELDS):
+        format_: FormatArg, output_fields=DEFAULT_OUTPUT_FIELDS):
     table = PrettyTable()
     table.field_names = output_fields
     table.align = 'l'
-    table.border = args.format_ in (FormatArg.MARKDOWN, FormatArg.RST,
-                                    FormatArg.CONFLUENCE, FormatArg.JSON)
+    table.border = format_ in (FormatArg.MARKDOWN, FormatArg.RST,
+                               FormatArg.CONFLUENCE, FormatArg.JSON)
     table.header = True
 
-    if args.format_ == FormatArg.MARKDOWN:
+    if format_ == FormatArg.MARKDOWN:
         table.junction_char = '|'
         table.hrules = RULE_HEADER
-    elif args.format_ == FormatArg.RST:
+    elif format_ == FormatArg.RST:
         table.junction_char = '+'
         table.hrules = RULE_ALL
-    elif args.format_ == FormatArg.CONFLUENCE:
+    elif format_ == FormatArg.CONFLUENCE:
         table.junction_char = '|'
         table.hrules = RULE_NONE
-    elif args.format_ == FormatArg.JSON:
+    elif format_ == FormatArg.JSON:
         table = JsonPrettyTable(table.field_names)
-    elif args.format_ == FormatArg.JSON_LICENSE_FINDER:
+    elif format_ == FormatArg.JSON_LICENSE_FINDER:
         table = JsonLicenseFinderTable(table.field_names)
-    elif args.format_ == FormatArg.CSV:
+    elif format_ == FormatArg.CSV:
         table = CSVPrettyTable(table.field_names)
-    elif args.format_ == FormatArg.PLAIN_VERTICAL:
+    elif format_ == FormatArg.PLAIN_VERTICAL:
         table = PlainVerticalTable(table.field_names)
 
     return table
