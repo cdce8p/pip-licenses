@@ -14,7 +14,7 @@ except ImportError:  # pragma: no cover
 
 # General information
 __pkgname__ = 'pip-licenses'
-__version__ = '3.3.0'
+__version__ = '4.0.0'
 __author__ = 'raimon'
 __license__ = 'MIT'
 __summary__ = ('Dump the software license list of '
@@ -129,3 +129,9 @@ MAP_DEST_TO_ENUM = {
     'order': OrderArg,
     'format_': FormatArg,
 }
+
+LICENSE_EXPR_PROPRIETARY = "LicenseRef-Proprietary"
+LICENSE_EXPR_PUBLIC_DOMAIN = "LicenseRef-Public-Domain"
+
+class SpecialLicenseExpr(Enum):
+    pass

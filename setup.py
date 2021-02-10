@@ -42,6 +42,7 @@ setup(
     url=URL,
     author=AUTHOR,
     license=LICENSE,
+    package_data={'': ['data/*.json']},
     entry_points={
         'console_scripts': [
             PKG_NAME + '=piplicenses.__main__:main',
